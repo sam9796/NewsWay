@@ -1,0 +1,74 @@
+#App.js
+import React from 'react'
+import {useSelector,useDispatch} from 'react-redux'
+import {actions,chng} from './store/index.js'
+function App() {
+  const {counter,col}=useSelector((state)=>{return {counter:state.counter,col:state.col}})
+  const dispatch=useDispatch()
+  const increment=()=>{
+   dispatch(actions.increment())
+  }
+  const decrement=()=>{
+   dispatch(actions.decrement())
+  }
+  const addBy=()=>{
+    dispatch(actions.addBy(10))
+  }
+  const changeCol=()=>{
+    dispatch(actions.change())
+  }
+  return (
+    <div  style={{"backgroundColor":col}}>
+      <h1>Counter App {col}</h1>
+      <h2>{counter}</h2>
+      <button onClick={increment}>Click</button>
+      <button onClick={decrement}>Click</button>
+      <button onClick={addBy}>Add value </button>
+      <button onClick={changeCol}>Change</button>
+    </div>
+  )
+}
+
+export default App
+#store index.js
+import {configureStore,createSlice} from '@reduxjs/toolkit'
+const counterSlice=createSlice({
+    name:'counter',
+    initialState:{counter:0,
+    col:'red'},
+    reducers:{
+        increment(state,action){
+            state.counter+=1;
+        },
+        decrement(state,action){
+             state.counter=state.counter-1;
+        },
+         addBy(state,action){
+            state.counter+=action.payload;
+         },
+         change(state,action){
+            if(state.col==='black')state.col='red'
+            else state.col='black'
+         }
+    },
+})
+export const actions=counterSlice.actions
+const store=configureStore({
+reducer:counterSlice.reducer})
+export default store
+#index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import {Provider} from 'react-redux'
+import store from "./store/index.js"
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <Provider  store={store}>
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+  </Provider>
+);
